@@ -9,7 +9,7 @@ import { fetchData, receiveData } from '@/action';
 
 const FormItem = Form.Item;
 
-class Login extends React.Component {
+class Register extends React.Component {
     componentWillMount() {
         const { receiveData } = this.props;
         receiveData(null, 'auth');
@@ -26,26 +26,20 @@ class Login extends React.Component {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                console.log('Received values of form: ', values);
+                console.log('注册 Received values of form: ', values);
                 const { fetchData } = this.props;
                 if (values.userName === 'admin' && values.password === 'admin') fetchData({funcName: 'admin', stateName: 'auth'});
                 if (values.userName === 'guest' && values.password === 'guest') fetchData({funcName: 'guest', stateName: 'auth'});
             }
         });
     };
-    register = () => {
-        this.props.history.push('/register');
-    };
-    gitHub = () => {
-        window.location.href = 'https://github.com/login/oauth/authorize?client_id=792cdcd244e98dcd2dee&redirect_uri=http://localhost:3006/&scope=user&state=reactAdmin';
-    };
     render() {
         const { getFieldDecorator } = this.props.form;
         return (
-            <div className="login">
-                <div className="login-form" >
-                    <div className="login-logo">
-                        <span>请先登录</span>
+            <div className="register">
+                <div className="register-form" >
+                    <div className="register-logo">
+                        <span>注册信息</span>
                     </div>
                     <Form onSubmit={this.handleSubmit} style={{maxWidth: '300px'}}>
                         <FormItem>
@@ -63,20 +57,30 @@ class Login extends React.Component {
                             )}
                         </FormItem>
                         <FormItem>
-                            {getFieldDecorator('remember', {
-                                valuePropName: 'checked',
-                                initialValue: true,
+                            {getFieldDecorator('telephone', {
+                                rules: [{ required: true, max: 11,pattern: /^1([3489])[0-9]{9}$/, message: '请正确输入电话号码!' }],
                             })(
-                                <Checkbox>记住我</Checkbox>
+                                <Input prefix={<Icon type="phone" style={{ fontSize: 13 }} />} type="text" placeholder="管理员输入admin, 游客输入guest" />
                             )}
-                            <a className="login-form-forgot" href="" style={{float: 'right'}}>忘记密码</a>
+                        </FormItem>
+                        <FormItem>
+                            {getFieldDecorator('address', {
+                                rules: [{ required: true, message: '请输入地址!' }],
+                            })(
+                                <Input prefix={<Icon type="home" style={{ fontSize: 13 }} />} type="text" placeholder="需要输入详细地址" />
+                            )}
+                        </FormItem>
+                        <FormItem>
+                            {getFieldDecorator('remember', {
+                                    valuePropName: 'checked',
+                                    initialValue: false,
+                                })(
+                                    <Checkbox>同意协议</Checkbox>
+                            )}
+                            <a className="login-form-forgot" href="" style={{float: 'right'}}>查看协议</a>
                             <Button type="primary" htmlType="submit" className="login-form-button" style={{width: '100%'}}>
-                                登录
+                                注册
                             </Button>
-                            <p style={{display: 'flex', justifyContent: 'space-between'}}>
-                                <a onClick={this.register}>或 现在就去注册!</a>
-                                <a onClick={this.gitHub} ><Icon type="github" />(第三方登录)</a>
-                            </p>
                         </FormItem>
                     </Form>
                 </div>
@@ -96,4 +100,4 @@ const mapDispatchToProps = dispatch => ({
 });
 
 
-export default connect(mapStateToPorps, mapDispatchToProps)(Form.create()(Login));
+export default connect(mapStateToPorps, mapDispatchToProps)(Form.create()(Register));
