@@ -6,6 +6,8 @@ import { connect } from 'react-redux';
 
 class AuthWidget extends Component {
     render() {
+    	console.log("this.props.auth.data: ");
+    	console.log(this.props.auth.data);
         return this.props.children(this.props.auth.data || {});
     }
 }

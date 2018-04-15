@@ -40,6 +40,8 @@
     "promise": "7.1.1",
     "prop-types": "^15.5.10",
     "rc-banner-anim": "^0.5.13",
+    "rc-queue-anim": "^1.5.0",
+    "rc-scroll-anim": "^2.4.1",
     "react": "^15.6.1",
     "react-dev-utils": "^3.0.2",
     "react-dom": "^15.6.1",

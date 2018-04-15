@@ -4,6 +4,10 @@
 import React from 'react';
 import BannerAnim, { Element } from 'rc-banner-anim';
 import TweenOne from 'rc-tween-one';
+import food_home0 from '../../../style/imgs/food_home0.jpg';
+import food_home1 from '../../../style/imgs/food_home1.jpg';
+import food_home2 from '../../../style/imgs/food_home2.jpg';
+import food_home3 from '../../../style/imgs/food_home3.jpg';
 import 'rc-banner-anim/assets/index.css';
 const BgElement = Element.BgElement;
 class AutoPlay extends React.Component {
@@ -18,16 +22,18 @@ class AutoPlay extends React.Component {
                         key="bg"
                         className="bg"
                         style={{
-                            background: '#364D79',
+                            backgroundImage: 'url('+food_home0+')',
+                            backgroundSize: 'cover',
+                            backroundPosition: 'center',
                         }}
                     />
                     <TweenOne className="banner-user-title" animation={{ y: 30, opacity: 0, type: 'from' }}>
-                        Ant Motion Banner
+                        美食节— —特产篇
                     </TweenOne>
                     <TweenOne className="banner-user-text"
                               animation={{ y: 30, opacity: 0, type: 'from', delay: 100 }}
                     >
-                        The Fast Way Use Animation In React
+                        2018.4.1--2018.4.15
                     </TweenOne>
                 </Element>
                 <Element
@@ -38,16 +44,62 @@ class AutoPlay extends React.Component {
                         key="bg"
                         className="bg"
                         style={{
-                            background: '#64CBCC',
+                            backgroundImage: 'url('+food_home1+')',
+                            backgroundSize: 'cover',
+                            backroundPosition: 'center',
                         }}
                     />
                     <TweenOne className="banner-user-title" animation={{ y: 30, opacity: 0, type: 'from' }}>
-                        Ant Motion Banner
+                        口水鸡
                     </TweenOne>
                     <TweenOne className="banner-user-text"
                               animation={{ y: 30, opacity: 0, type: 'from', delay: 100 }}
                     >
-                        The Fast Way Use Animation In React
+                        四川-香辣
+                    </TweenOne>
+                </Element>
+                <Element
+                    prefixCls="banner-user-elem"
+                    key="2"
+                >
+                    <BgElement
+                        key="bg"
+                        className="bg"
+                        style={{
+                            backgroundImage: 'url('+food_home2+')',
+                            backgroundSize: 'cover',
+                            backroundPosition: 'center',
+                        }}
+                    />
+                    <TweenOne className="banner-user-title" animation={{ y: 30, opacity: 0, type: 'from' }}>
+                        美食节— —甜点篇
+                    </TweenOne>
+                    <TweenOne className="banner-user-text"
+                              animation={{ y: 30, opacity: 0, type: 'from', delay: 100 }}
+                    >
+                        香草布丁
+                    </TweenOne>
+                </Element>
+                <Element
+                    prefixCls="banner-user-elem"
+                    key="3"
+                >
+                    <BgElement
+                        key="bg"
+                        className="bg"
+                        style={{
+                            backgroundImage: 'url('+food_home3+')',
+                            backgroundSize: 'cover',
+                            backroundPosition: 'center',
+                        }}
+                    />
+                    <TweenOne className="banner-user-title" animation={{ y: 30, opacity: 0, type: 'from' }}>
+                        蛋糕点心
+                    </TweenOne>
+                    <TweenOne className="banner-user-text"
+                              animation={{ y: 30, opacity: 0, type: 'from', delay: 100 }}
+                    >
+                        买一送一
                     </TweenOne>
                 </Element>
             </BannerAnim>);

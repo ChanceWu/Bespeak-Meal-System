@@ -19,6 +19,7 @@ import Tabs from '../components/ui/Tabs';
 import Banners from '../components/ui/banners';
 import Drags from '../components/ui/Draggable';
 import Dashboard from '../components/dashboard/Dashboard';
+import Home from '../components/dashboard/Home';
 import Gallery from '../components/ui/Gallery';
 import BasicAnimations from '../components/animation/BasicAnimations';
 import ExampleAnimations from '../components/animation/ExampleAnimations';
@@ -47,6 +48,7 @@ export default class CRouter extends Component {
         return (
             <Switch>
                 <Route exact path="/app/dashboard/index" component={Dashboard} />
+                <Route exact path="/app/dashboard/home" component={Home} />
                 <Route exact path="/app/form/basicForm" component={BasicForm} />
                 <Route exact path="/app/table/basicTable" component={BasicTable} />
                 <Route exact path="/app/table/advancedTable" component={AdvancedTable} />
