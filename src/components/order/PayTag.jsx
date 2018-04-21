@@ -8,6 +8,10 @@ export default class PayTag extends React.Component{
     	this.setState({ checked });
   	}
   	render() {
-	    return <CheckableTag color="#f00" {...this.props} checked={this.state.checked} onChange={this.handleChange} />;
+	    return (
+	    	<CheckableTag color="#f00" {...this.props} checked={this.state.checked} onChange={this.handleChange} >
+	    		{this.state.checked?'去付款':'已付款'}
+	    	</CheckableTag>
+    	);
   	}
 }

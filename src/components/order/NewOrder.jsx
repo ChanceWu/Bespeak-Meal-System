@@ -33,7 +33,7 @@ const columns = [{
   width: 360,
   render: (text, record) => (
     <span>
-      <span style={{float: 'left'}}><PayTag>去付款</PayTag></span>
+      <span style={{float: 'left'}}><PayTag /></span>
     </span>
   ),
 }];
