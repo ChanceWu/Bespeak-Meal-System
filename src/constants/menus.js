@@ -7,6 +7,12 @@ export const menus = [
         ],
     },
     {
+        key: '/app/order', title: '我的订单', icon: 'user',
+        sub: [
+            { key: '/app/order/newOrder', title: '当前订单', icon: '', },
+        ],
+    },
+    {
         key: '/app/ui', title: 'UI', icon: 'scan',
         sub: [
             { key: '/app/ui/buttons', title: '按钮', icon: '', },
