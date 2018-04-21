@@ -103,7 +103,7 @@ class All extends React.Component {
                     <Card bordered={false} bodyStyle={{ padding: 0, height: 300 }}>
                         <div>
                             <img onClick={() => this.openGallery(v2)} alt="example" width="100%" height="240px" src={v2} />
-                            <div style={{position: 'absolute',bottom: 60,right:0,paddingRight:5,paddingLeft:5,fontSize: '30px',color: '#f00',backgroundColor: '#ccc',opacity: 0.7,borderRadius:5}}>32.5元</div>
+                            <div style={{position: 'absolute',bottom: 60,right:0,paddingRight:5,paddingLeft:5,fontSize: '30px',color: '#f00',backgroundColor: '#ccc',opacity: 0.7,borderRadius:5}}>￥32.5元</div>
                         </div>
                         <div className="pa-m">
                             <h3>餐名<span style={{float: 'right'}}><MyTag>选中订餐</MyTag></span></h3>

@@ -30,7 +30,6 @@ const columns = [{
 }, {
   title: '操作',
   key: 'action',
-  width: 360,
   render: (text, record) => (
     <span>
       <span style={{float: 'left'}}><PayTag /></span>
