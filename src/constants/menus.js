@@ -13,6 +13,13 @@ export const menus = [
         ],
     },
     {
+        key: '/app/management', title: '商店管理', icon: 'setting',
+        sub: [
+            { key: '/app/management/dishManagement', title: '餐品管理', icon: '', },
+            { key: '/app/management/orderManagement', title: '订餐管理', icon: '', },
+        ],
+    },
+    {
         key: '/app/ui', title: 'UI', icon: 'scan',
         sub: [
             { key: '/app/ui/buttons', title: '按钮', icon: '', },

@@ -22,6 +22,7 @@ import Dashboard from '../components/dashboard/Dashboard';
 import Home from '../components/dashboard/Home';
 import All from '../components/category/All';
 import NewOrder from '../components/order/NewOrder';
+import OrderManagement from '../components/management/OrderManagement';
 import Gallery from '../components/ui/Gallery';
 import BasicAnimations from '../components/animation/BasicAnimations';
 import ExampleAnimations from '../components/animation/ExampleAnimations';
@@ -53,6 +54,7 @@ export default class CRouter extends Component {
                 <Route exact path="/app/dashboard/home" component={Home} />
                 <Route exact path="/app/category/all" component={All} />
                 <Route exact path="/app/order/newOrder" component={NewOrder} />
+                <Route exact path="/app/management/orderManagement" component={OrderManagement} />
                 <Route exact path="/app/form/basicForm" component={BasicForm} />
                 <Route exact path="/app/table/basicTable" component={BasicTable} />
                 <Route exact path="/app/table/advancedTable" component={AdvancedTable} />
