@@ -21,6 +21,9 @@ import Drags from '../components/ui/Draggable';
 import Dashboard from '../components/dashboard/Dashboard';
 import Home from '../components/dashboard/Home';
 import All from '../components/category/All';
+import Meals from '../components/category/Meals';
+import Dessert from '../components/category/Dessert';
+import ShoppingCart from '../components/shopping/ShoppingCart';
 import NewOrder from '../components/order/NewOrder';
 import DishManagement from '../components/management/DishManagement';
 import OrderManagement from '../components/management/OrderManagement';
@@ -54,6 +57,9 @@ export default class CRouter extends Component {
                 <Route exact path="/app/dashboard/index" component={Dashboard} />
                 <Route exact path="/app/dashboard/home" component={Home} />
                 <Route exact path="/app/category/all" component={All} />
+                <Route exact path="/app/category/meals" component={Meals} />
+                <Route exact path="/app/category/dessert" component={Dessert} />
+                <Route exact path="/app/shopping/shoppingCart" component={ShoppingCart} />
                 <Route exact path="/app/order/newOrder" component={NewOrder} />
                 <Route exact path="/app/management/dishManagement" component={DishManagement} />
                 <Route exact path="/app/management/orderManagement" component={OrderManagement} />

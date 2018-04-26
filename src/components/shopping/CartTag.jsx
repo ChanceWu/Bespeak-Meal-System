@@ -3,17 +3,17 @@ import { Tag, message } from 'antd';
 const { CheckableTag } = Tag;
 
 export default class MyTag extends React.Component{
-	state = { checked: false };
+	state = { checked: true };
   	handleChange = (checked) => {
     	this.setState({ checked });
-    	if(checked){
-    		message.info('订单已经加入我的购物车，请前往确认订单吧！');
+    	if(!checked){
+    		message.info("已经清除该订单");
     	}
   	}
   	render() {
 	    return (
 	    	<CheckableTag color="#f00" {...this.props} checked={this.state.checked} onChange={this.handleChange} >
-	    		选中订餐
+	    		清除订单
 	    	</CheckableTag>
     	);
   	}

@@ -1,13 +1,13 @@
 import React from 'react';
 import { Row, Col, Card, Collapse } from 'antd';
 import BreadcrumbCustom from '../BreadcrumbCustom';
-import MyTag from './MyTag';
+import CartTag from './CartTag';
 import PhotoSwipe from 'photoswipe';
 import PhotoswipeUIDefault from 'photoswipe/dist/photoswipe-ui-default';
 import 'photoswipe/dist/photoswipe.css';
 import 'photoswipe/dist/default-skin/default-skin.css';
 
-class All extends React.Component {
+class ShoppingCart extends React.Component {
     state = {
         gallery: null
     };
@@ -106,7 +106,7 @@ class All extends React.Component {
                             <div style={{position: 'absolute',bottom: 60,right:0,paddingRight:5,paddingLeft:5,fontSize: '30px',color: '#f00',backgroundColor: '#ccc',opacity: 0.7,borderRadius:5}}>￥32.5元</div>
                         </div>
                         <div className="pa-m">
-                            <h3>餐名<span style={{float: 'right'}}><MyTag /></span></h3>
+                            <h3>餐名<span style={{float: 'right'}}><CartTag /></span></h3>
                             <small>商家名</small>
                         </div>
                     </Card>
@@ -120,7 +120,7 @@ class All extends React.Component {
         ));
         return (
             <div className="gutter-example button-demo">
-                <BreadcrumbCustom first="分类" second="全部" />
+                <BreadcrumbCustom first="购物车" second="我的购物车" />
                 <Row gutter={10}>
                     <Col className="gutter-row" md={4}>
                         {imgsTag[0]}
@@ -203,4 +203,4 @@ class All extends React.Component {
     }
 }
 
-export default All;
+export default ShoppingCart;

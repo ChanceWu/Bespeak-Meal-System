@@ -1,12 +1,6 @@
 export const menusAdmin = [
     { key: '/app/dashboard/home', title: '主页', icon: 'home', },
     {
-        key: '/app/category', title: '分类', icon: 'appstore',
-        sub: [
-            { key: '/app/category/all', title: '全部', icon: '', },
-        ],
-    },
-    {
         key: '/app/management', title: '商店管理', icon: 'setting',
         sub: [
             { key: '/app/management/dishManagement', title: '餐品管理', icon: '', },
@@ -84,8 +78,11 @@ export const menusCustom = [
         key: '/app/category', title: '分类', icon: 'appstore',
         sub: [
             { key: '/app/category/all', title: '全部', icon: '', },
+            { key: '/app/category/meals', title: '主餐', icon: '', },
+            { key: '/app/category/dessert', title: '甜点', icon: '', },
         ],
     },
+    { key: '/app/shopping/shoppingCart', title: '我的购物车', icon: 'shopping-cart', },
     {
         key: '/app/order', title: '我的订单', icon: 'user',
         sub: [
