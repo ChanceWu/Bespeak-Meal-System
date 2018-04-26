@@ -4,10 +4,16 @@
 import React, { Component } from 'react';
 import { Layout } from 'antd';
 import { withRouter } from 'react-router-dom';
-import { menus } from '../constants/menus';
+import { connect } from 'react-redux';
+import { menusAdmin, menusCustom } from '../constants/menus';
 import SiderMenu from './SiderMenu';
 
 const { Sider } = Layout;
+
+const mapStateToProps = state => {
+    const { auth = {data: {}} } = state.httpData;
+    return { auth };
+};
 
 class SiderCustom extends Component {
     state = {
@@ -56,6 +62,8 @@ class SiderCustom extends Component {
         })
     };
     render() {
+        console.log("ssthis.props.auth.data: ");
+        console.log(this.props.auth.data);
         return (
             <Sider
                 trigger={null}
@@ -65,7 +73,7 @@ class SiderCustom extends Component {
             >
                 <div className="logo" />
                 <SiderMenu
-                    menus={menus}
+                    menus={this.props.auth.data.uid==1?menusAdmin:menusCustom}
                     onClick={this.menuClick}
                     theme="dark"
                     mode="inline"
@@ -86,4 +94,4 @@ class SiderCustom extends Component {
     }
 }
 
-export default withRouter(SiderCustom);
+export default withRouter(connect(mapStateToProps)(SiderCustom));

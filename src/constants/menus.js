@@ -1,4 +1,4 @@
-export const menus = [
+export const menusAdmin = [
     { key: '/app/dashboard/home', title: '主页', icon: 'home', },
     {
         key: '/app/category', title: '分类', icon: 'appstore',
@@ -7,16 +7,11 @@ export const menus = [
         ],
     },
     {
-        key: '/app/order', title: '我的订单', icon: 'user',
-        sub: [
-            { key: '/app/order/newOrder', title: '当前订单', icon: '', },
-        ],
-    },
-    {
         key: '/app/management', title: '商店管理', icon: 'setting',
         sub: [
             { key: '/app/management/dishManagement', title: '餐品管理', icon: '', },
             { key: '/app/management/orderManagement', title: '订餐管理', icon: '', },
+            
         ],
     },
     {
@@ -80,5 +75,21 @@ export const menus = [
     },
     {
         key: '/app/cssModule', title: 'cssModule', icon: 'star',
+    },
+];
+
+export const menusCustom = [
+    { key: '/app/dashboard/home', title: '主页', icon: 'home', },
+    {
+        key: '/app/category', title: '分类', icon: 'appstore',
+        sub: [
+            { key: '/app/category/all', title: '全部', icon: '', },
+        ],
+    },
+    {
+        key: '/app/order', title: '我的订单', icon: 'user',
+        sub: [
+            { key: '/app/order/newOrder', title: '当前订单', icon: '', },
+        ],
     },
 ];
