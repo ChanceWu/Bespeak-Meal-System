@@ -5,7 +5,7 @@ import React, { Component } from 'react';
 import { Layout } from 'antd';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { menusAdmin, menusCustom } from '../constants/menus';
+import { menus, menusAdmin, menusCustom } from '../constants/menus';
 import SiderMenu from './SiderMenu';
 
 const { Sider } = Layout;
@@ -24,6 +24,22 @@ class SiderCustom extends Component {
         firstHide: true,        // 点击收缩菜单，第一次隐藏展开子菜单，openMenu时恢复
     };
     componentDidMount() {
+        console.log('this.props.auth.data');
+        console.log(this.props.auth.data);
+        if(this.props.auth.data&&this.props.auth.data.uid==1){
+            this.setState({
+                menusSider: menusAdmin,
+            });
+        }else if(this.props.auth.data&&this.props.auth.data.uid==2){
+            this.setState({
+                menusSider: menusCustom,
+            });
+        }else{
+            this.setState({
+                menusSider: menus,
+            });
+        }
+        
         this.setMenuOpen(this.props);
     }
     componentWillReceiveProps(nextProps) {
@@ -73,7 +89,7 @@ class SiderCustom extends Component {
             >
                 <div className="logo" />
                 <SiderMenu
-                    menus={this.props.auth.data.uid==1?menusAdmin:menusCustom}
+                    menus={this.state.menusSider}
                     onClick={this.menuClick}
                     theme="dark"
                     mode="inline"

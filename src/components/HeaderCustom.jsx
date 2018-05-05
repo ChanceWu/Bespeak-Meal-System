@@ -2,7 +2,7 @@
  * Created by hao.cheng on 2017/4/13.
  */
 import React, { Component } from 'react';
-import { Menu, Icon, Layout, Badge, Popover } from 'antd';
+import { Menu, Icon, Layout, Badge, Popover,Button,message, Modal,Form,  Input,  Checkbox } from 'antd';
 import screenfull from 'screenfull';
 import { gitOauthToken, gitOauthInfo } from '../axios';
 import { queryString } from '../utils';
@@ -10,15 +10,24 @@ import avater from '../style/imgs/b1.jpg';
 import SiderCustom from './SiderCustom';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+import { Link,hashHistory,browserHistory } from 'react-router';
+import { bindActionCreators } from 'redux';
+import { fetchData, receiveData } from '@/action';
 const { Header } = Layout;
 const SubMenu = Menu.SubMenu;
 const MenuItemGroup = Menu.ItemGroup;
+const FormItem = Form.Item;
 
 class HeaderCustom extends Component {
     state = {
         user: '',
         visible: false,
-    };
+        registerVisible: false,
+    }
+    componentWillMount() {
+        const { receiveData } = this.props;
+        receiveData(null, 'auth');
+    }
     componentDidMount() {
         const QueryString = queryString();
         // if (QueryString.hasOwnProperty('code')) {
@@ -52,31 +61,90 @@ class HeaderCustom extends Component {
                 user: _user
             });
         }
-    };
+    }
+    componentWillReceiveProps(nextProps) {
+        const { auth: nextAuth = {} } = nextProps;
+        const { history } = this.props;
+        if (nextAuth.data && nextAuth.data.uid) {   // 判断是否登陆
+            console.log('nextAuth.data');
+            console.log(nextAuth.data);
+            if(nextAuth.data.uid == 1){
+                localStorage.setItem('user', JSON.stringify(nextAuth.data));
+                browserHistory.push(`/app/dashboard/home`);
+                window.location.reload();
+            }else{
+                localStorage.setItem('user', JSON.stringify(nextAuth.data));
+                browserHistory.push(`/app/dashboard/home`);
+                window.location.reload();
+            } 
+        } 
+        
+    }
     screenFull = () => {
         if (screenfull.enabled) {
             screenfull.request();
         }
-
-    };
+    }
     menuClick = e => {
         console.log(e);
         e.key === 'logout' && this.logout();
-    };
+    }
+    showModal = () => {
+        this.setState({
+          visible: true,
+        });
+    }
+    showModalRegister = () => {
+        this.setState({
+          visible: false,
+          registerVisible: true,
+        });
+    }
+    handleOk = (e) => {
+        this.setState({
+          visible: false,
+        });
+    }
     logout = () => {
         localStorage.removeItem('user');
-        this.props.history.push('/login')
-    };
+        this.props.history.push('/app/dashboard/home')
+    }
     popoverHide = () => {
         this.setState({
             visible: false,
         });
-    };
+    }
     handleVisibleChange = (visible) => {
         this.setState({ visible });
-    };
+    }
+    handleSubmit = (e) => {
+        e.preventDefault();
+        this.props.form.validateFields((err, values) => {
+            if (!err) {
+                console.log('Received values of form: ', values);
+                const { fetchData } = this.props;
+                if (values.userName === 'admin' && values.password === 'admin'){
+                    fetchData({funcName: 'admin', stateName: 'auth'});
+                    message.success("管理员登录成功");
+                }
+                if (values.userName === 'guest' && values.password === 'guest'){
+                    fetchData({funcName: 'guest', stateName: 'auth'});
+                    message.success("用户登录成功");
+                }
+            }
+        });
+        this.setState({
+            visible: false,
+        });
+    }
+    gitHub = () => {
+        window.location.href = 'https://github.com/login/oauth/authorize?client_id=792cdcd244e98dcd2dee&redirect_uri=http://localhost:3006/&scope=user&state=reactAdmin';
+    }
     render() {
         const { responsive, path } = this.props;
+        console.log('this.state');
+        console.log(this.state);
+        const { getFieldDecorator } = this.props.form;
         return (
             <Header style={{ background: '#fff', padding: 0, height: 65 }} className="custom-theme" >
                 {
@@ -92,27 +160,26 @@ class HeaderCustom extends Component {
                         />
                     )
                 }
-                <Menu
-                    mode="horizontal"
-                    style={{ lineHeight: '64px', float: 'right' }}
-                    onClick={this.menuClick}
-                >
-                    <Menu.Item key="2" >
-                        <span>one</span>
-                    </Menu.Item>
+                <Menu mode="horizontal" style={{ lineHeight: '64px', float: 'right' }} onClick={this.menuClick} >
                     <Menu.Item key="full" onClick={this.screenFull} >
                         <Icon type="arrows-alt" onClick={this.screenFull} />
                     </Menu.Item>
-                    <Menu.Item key="1">
-                        <Badge count={25} overflowCount={10} style={{marginLeft: 10}}>
-                            <Icon type="notification" />
-                        </Badge>
+                    <Menu.Item key="name" >
+                        <span>{this.state.user.userName}</span>
                     </Menu.Item>
-                    <SubMenu title={<span className="avatar"><img src={avater} alt="头像" /><i className="on bottom b-white" /></span>}>
+                    <SubMenu title={
+                        <span className="avatar">
+                        {
+                            this.state.user.userName?<span><img src={avater} alt="头像" /><i className="on bottom b-white" /></span>:<span>未登录</span>
+                        }
+                        </span>
+                    }>
                         <MenuItemGroup title="用户中心">
-                            <Menu.Item key="setting:1">你好 - {this.props.user.userName}</Menu.Item>
+                            {/*<Menu.Item key="setting:1">你好 - {this.props.user.userName}</Menu.Item>*/}
                             <Menu.Item key="setting:2">个人信息</Menu.Item>
-                            <Menu.Item key="logout"><span onClick={this.logout}>退出登录</span></Menu.Item>
+                            {
+                                this.state.user.userName?<Menu.Item key="logout"><span onClick={this.logout}>退出登录</span></Menu.Item>:<Menu.Item key="login"><span onClick={this.showModal}>登录</span></Menu.Item>
+                            }
                         </MenuItemGroup>
                         <MenuItemGroup title="设置中心">
                             <Menu.Item key="setting:3">个人设置</Menu.Item>
@@ -120,6 +187,86 @@ class HeaderCustom extends Component {
                         </MenuItemGroup>
                     </SubMenu>
                 </Menu>
+
+                <Modal title="登录" footer={null} style={{maxWidth: '400px'}} visible={this.state.visible} onOk={this.handleOk} onCancel={this.handleCancel} >
+                    <Form onSubmit={this.handleSubmit}>
+                        <FormItem>
+                            {getFieldDecorator('userName', {
+                                rules: [{ required: true, message: '请输入用户名!' }],
+                            })(
+                                <Input prefix={<Icon type="user" style={{ fontSize: 13 }} />} placeholder="管理员输入admin, 游客输入guest" />
+                            )}
+                        </FormItem>
+                        <FormItem>
+                            {getFieldDecorator('password', {
+                                rules: [{ required: true, message: '请输入密码!' }],
+                            })(
+                                <Input prefix={<Icon type="lock" style={{ fontSize: 13 }} />} type="password" placeholder="管理员输入admin, 游客输入guest" />
+                            )}
+                        </FormItem>
+                        <FormItem>
+                            {getFieldDecorator('remember', {
+                                valuePropName: 'checked',
+                                initialValue: true,
+                            })(
+                                <Checkbox>记住我</Checkbox>
+                            )}
+                            <a className="login-form-forgot" href="" style={{float: 'right'}}>忘记密码</a>
+                            <Button type="primary" htmlType="submit" className="login-form-button" style={{width: '100%'}}>
+                                登录
+                            </Button>
+                            <p style={{display: 'flex', justifyContent: 'space-between'}}>
+                                <a onClick={this.showModalRegister} >或 现在就去注册!</a>
+                                {/*<a onClick={this.gitHub} ><Icon type="github" />(第三方登录)</a>*/}
+                            </p>
+                        </FormItem>
+                    </Form>
+                </Modal>
+
+                <Modal title="注册" footer={null} style={{maxWidth: '400px'}} visible={this.state.registerVisible} onOk={this.handleOk} onCancel={this.handleCancel} >
+                    <Form onSubmit={this.handleSubmit} style={{maxWidth: '300px'}}>
+                        <FormItem>
+                            {getFieldDecorator('userName', {
+                                rules: [{ required: true, message: '请输入用户名!' }],
+                            })(
+                                <Input prefix={<Icon type="user" style={{ fontSize: 13 }} />} placeholder="管理员输入admin, 游客输入guest" />
+                            )}
+                        </FormItem>
+                        <FormItem>
+                            {getFieldDecorator('password', {
+                                rules: [{ required: true, message: '请输入密码!' }],
+                            })(
+                                <Input prefix={<Icon type="lock" style={{ fontSize: 13 }} />} type="password" placeholder="管理员输入admin, 游客输入guest" />
+                            )}
+                        </FormItem>
+                        <FormItem>
+                            {getFieldDecorator('telephone', {
+                                rules: [{ required: true, max: 11,pattern: /^1([3489])[0-9]{9}$/, message: '请正确输入电话号码!' }],
+                            })(
+                                <Input prefix={<Icon type="phone" style={{ fontSize: 13 }} />} type="text" placeholder="管理员输入admin, 游客输入guest" />
+                            )}
+                        </FormItem>
+                        <FormItem>
+                            {getFieldDecorator('address', {
+                                rules: [{ required: true, message: '请输入地址!' }],
+                            })(
+                                <Input prefix={<Icon type="home" style={{ fontSize: 13 }} />} type="text" placeholder="需要输入详细地址" />
+                            )}
+                        </FormItem>
+                        <FormItem>
+                            {getFieldDecorator('remember', {
+                                    valuePropName: 'checked',
+                                    initialValue: false,
+                                })(
+                                    <Checkbox>同意协议</Checkbox>
+                            )}
+                            <a className="login-form-forgot" href="" style={{float: 'right'}}>查看协议</a>
+                            <Button type="primary" htmlType="submit" className="login-form-button" style={{width: '100%'}}>
+                                注册
+                            </Button>
+                        </FormItem>
+                    </Form>
+                </Modal>
                 <style>{`
                     .ant-menu-submenu-horizontal > .ant-menu {
                         width: 120px;
@@ -133,7 +280,13 @@ class HeaderCustom extends Component {
 
 const mapStateToProps = state => {
     const { responsive = {data: {}} } = state.httpData;
-    return {responsive};
+    const { auth } = state.httpData;
+    return {responsive,auth};
 };
 
-export default withRouter(connect(mapStateToProps)(HeaderCustom));
+const mapDispatchToProps = dispatch => ({
+    fetchData: bindActionCreators(fetchData, dispatch),
+    receiveData: bindActionCreators(receiveData, dispatch)
+});
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Form.create()(HeaderCustom)));
