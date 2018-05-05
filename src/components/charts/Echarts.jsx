@@ -7,6 +7,7 @@ import EchartsArea from './EchartsArea';
 import EchartsPie from './EchartsPie';
 import EchartsEffectScatter from './EchartsEffectScatter';
 import EchartsForce from './EchartsForce';
+import EchartsScatter from './EchartsScatter';
 
 class Echarts extends React.Component {
     render() {
@@ -34,6 +35,15 @@ class Echarts extends React.Component {
                         <div className="gutter-box">
                             <Card title="饼图" bordered={false}>
                                 <EchartsPie />
+                            </Card>
+                        </div>
+                    </Col>
+                </Row>
+                <Row gutter={16}>
+                    <Col className="gutter-row" md={24}>
+                        <div className="gutter-box">
+                            <Card title="散点图" bordered={false}>
+                                <EchartsScatter />
                             </Card>
                         </div>
                     </Col>

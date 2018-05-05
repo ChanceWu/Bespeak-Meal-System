@@ -5,13 +5,14 @@ import React from 'react';
 import { Row, Col, Card } from 'antd';
 import enquire from 'enquire.js';
 import ScrollAnim from 'rc-scroll-anim';
-import AutoPlay from '../ui/banners/AutoPlay';
+import AutoPlay from './AutoPlay';
 import b1 from '../../style/imgs/b1.jpg';
 
 import Content1 from './Content1';
 import Content2 from './Content2';
 import Content3 from './Content3';
 import '../../style/less/antMotion_style.less';
+import { weibo } from '../../axios';
 
 const scrollScreen = ScrollAnim.scrollScreen;
 
@@ -29,6 +30,10 @@ export default class Home extends React.Component {
         };
     }
     componentDidMount() {
+        console.log("weibo success1");
+        weibo().then( res => {
+            console.log("weibo success");
+        });
         // 适配手机屏幕;
         // enquire.register('screen and (max-width: 900px)',{
         //     match(e){

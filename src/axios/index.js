@@ -2,6 +2,7 @@
  * Created by hao.cheng on 2017/4/16.
  */
 import axios from 'axios';
+import qs from 'qs';
 import { get } from './tools';
 import * as config from './config';
 
@@ -18,8 +19,8 @@ export const getPros = () => axios.post('http://api.xitu.io/resources/github', {
 });
 
 export const npmDependencies = () => axios.get('./npm.json').then(res => res.data).catch(err => console.log(err));
-
-export const weibo = () => axios.get('./weibo.json').then(res => res.data).catch(err => console.log(err));
+const data = { 'bar': 123 };
+export const weibo = () => axios.post('http://118.123.32.33:27105',qs.stringify(data)).then(res => {console.log('res.data');console.log(res.data);}).catch(err => console.log(err));
 
 const GIT_OAUTH = 'https://github.com/login/oauth';
 export const gitOauthLogin = () => axios.get(`${GIT_OAUTH}/authorize?client_id=792cdcd244e98dcd2dee&redirect_uri=http://localhost:3006/&scope=user&state=reactAdmin`);

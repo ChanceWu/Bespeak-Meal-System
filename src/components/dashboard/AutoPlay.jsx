@@ -4,10 +4,10 @@
 import React from 'react';
 import BannerAnim, { Element } from 'rc-banner-anim';
 import TweenOne from 'rc-tween-one';
-import food_home0 from '../../../style/imgs/food_home0.jpg';
-import food_home1 from '../../../style/imgs/food_home1.jpg';
-import food_home2 from '../../../style/imgs/food_home2.jpg';
-import food_home3 from '../../../style/imgs/food_home3.jpg';
+import food_home0 from '../../style/imgs/food_home0.jpg';
+import food_home1 from '../../style/imgs/food_home1.jpg';
+import food_home2 from '../../style/imgs/food_home2.jpg';
+import food_home3 from '../../style/imgs/food_home3.jpg';
 import 'rc-banner-anim/assets/index.css';
 const BgElement = Element.BgElement;
 class AutoPlay extends React.Component {
