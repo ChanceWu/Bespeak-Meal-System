@@ -87,7 +87,7 @@ class OrderManagememt extends React.Component {
     	const state = this.state;
     	return (
       		<div>
-      			<BreadcrumbCustom first="商店管理" second="订餐管理" />
+      			<BreadcrumbCustom first="订餐管理" />
         		<div className="components-table-demo-control-bar">
           			<Form layout="inline">
             			<FormItem label="是否分页">

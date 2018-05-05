@@ -134,7 +134,7 @@ class DishManagememt extends React.Component {
     };
     return (
       <div>
-        <BreadcrumbCustom first="商店管理" second="餐品管理" />
+        <BreadcrumbCustom first="餐品管理" />
         <Button className="editable-add-btn" onClick={this.handleAdd}>添加</Button>
         <Button className="editable-add-btn" onClick={this.handleAdd}>删除</Button>
         <Table rowSelection={rowSelection} bordered dataSource={dataSource} columns={columns} />

@@ -16,8 +16,11 @@ import Meals from '../components/category/Meals';
 import Dessert from '../components/category/Dessert';
 import ShoppingCart from '../components/shopping/ShoppingCart';
 import NewOrder from '../components/order/NewOrder';
+import UserMessage from '../components/user/UserMessage';
 import DishManagement from '../components/management/DishManagement';
 import OrderManagement from '../components/management/OrderManagement';
+import StoreMessage from '../components/management/message/StoreMessage';
+import AdminMessage from '../components/management/message/AdminMessage';
 import AuthBasic from '../components/auth/Basic';
 import RouterEnter from '../components/auth/RouterEnter';
 import Bundle from '../components/widget/Bundle';
@@ -40,8 +43,12 @@ export default class CRouter extends Component {
                 <Route exact path="/app/category/dessert" component={Dessert} />
                 <Route exact path="/app/shopping/shoppingCart" component={ShoppingCart} />
                 <Route exact path="/app/order/newOrder" component={NewOrder} />
+                <Route exact path="/app/user/userMessage" component={UserMessage} />
+
                 <Route exact path="/app/management/dishManagement" component={DishManagement} />
                 <Route exact path="/app/management/orderManagement" component={OrderManagement} />
+                <Route exact path="/app/management/message/storeMessage" component={StoreMessage} />
+                <Route exact path="/app/management/message/adminMessage" component={AdminMessage} />
                 <Route exact path="/app/form/basicForm" component={BasicForm} />
                 <Route exact path="/app/table/basicTable" component={BasicTable} />
                 <Route exact path="/app/table/advancedTable" component={AdvancedTable} />

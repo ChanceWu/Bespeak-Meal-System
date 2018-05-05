@@ -1,11 +1,12 @@
 export const menusAdmin = [
     { key: '/app/dashboard/home', title: '主页', icon: 'home', },
-    {
-        key: '/app/management', title: '商店管理', icon: 'setting',
+    { key: '/app/management/dishManagement', title: '餐品管理', icon: 'appstore-o', },
+    { key: '/app/management/orderManagement', title: '订餐管理', icon: 'bell', },
+    { 
+        key: '/app/management/message', title: '信息管理', icon: 'shop',
         sub: [
-            { key: '/app/management/dishManagement', title: '餐品管理', icon: '', },
-            { key: '/app/management/orderManagement', title: '订餐管理', icon: '', },
-            
+            { key: '/app/management/message/storeMessage', title: '商店信息', icon: '' },
+            { key: '/app/management/message/adminMessage', title: '店主信息', icon: '' },
         ],
     },
     {
@@ -57,10 +58,10 @@ export const menusCustom = [
         ],
     },
     { key: '/app/shopping/shoppingCart', title: '我的购物车', icon: 'shopping-cart', },
-    {
-        key: '/app/order', title: '我的订单', icon: 'user',
-        sub: [
-            { key: '/app/order/newOrder', title: '当前订单', icon: '', },
-        ],
-    },
+    { key: '/app/order/newOrder', title: '我的订单', icon: 'bell', },
+    { key: '/app/user/userMessage', title: '个人信息', icon: 'solution', },
+];
+
+export const menus = [
+    { key: '/app/dashboard/home', title: '主页', icon: 'home', },
 ];
