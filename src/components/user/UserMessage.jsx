@@ -63,7 +63,7 @@ class UserMessage extends React.Component {
 						        			迪拜八星酒店
 						        		</p>
 						        		<p className="store_introduction"><strong>店铺地址：</strong>
-						        			迪拜八星酒店
+						        			迪拜
 						        		</p>
 						        		<p className="store_introduction"><strong>文化程度：</strong>
 						        			本科

@@ -2,7 +2,7 @@
  * Created by hao.cheng on 2017/4/13.
  */
 import React, { Component } from 'react';
-import { Menu, Icon, Layout, Badge, Popover,Button,message, Modal,Form,  Input,  Checkbox } from 'antd';
+import { Menu, Icon, Layout, Badge, Popover,Button,message, Modal,Form,  Input, Checkbox, Radio } from 'antd';
 import screenfull from 'screenfull';
 import { gitOauthToken, gitOauthInfo } from '../axios';
 import { queryString } from '../utils';
@@ -13,16 +13,28 @@ import { withRouter } from 'react-router-dom';
 import { Link,hashHistory,browserHistory } from 'react-router';
 import { bindActionCreators } from 'redux';
 import { fetchData, receiveData } from '@/action';
+import { getAdmin } from '../action/home';
 const { Header } = Layout;
 const SubMenu = Menu.SubMenu;
 const MenuItemGroup = Menu.ItemGroup;
 const FormItem = Form.Item;
+const RadioGroup = Radio.Group;
+
+@connect(state => ({
+    home: state.home,
+}))
 
 class HeaderCustom extends Component {
     state = {
         user: '',
-        visible: false,
+        loginVisible: false,
         registerVisible: false,
+        isLogin: false,
+        isRegister: false,
+        adminMessage: [],
+        id: 0,
+        password: '',
+        telephone: '',
     }
     componentWillMount() {
         const { receiveData } = this.props;
@@ -91,27 +103,44 @@ class HeaderCustom extends Component {
     }
     showModal = () => {
         this.setState({
-          visible: true,
+            loginVisible: true,
+            isLogin: true,
+            registerVisible: false,
+            isRegister: false,
         });
     }
     showModalRegister = () => {
         this.setState({
-          visible: false,
-          registerVisible: true,
+            loginVisible: false,
+            isLogin: false,
+            registerVisible: true,
+            isRegister: true,
         });
     }
     handleOk = (e) => {
         this.setState({
-          visible: false,
+            loginVisible: false,
+            registerVisible: false,
+            isLogin: false,
+            isRegister: false,
+        });
+    }
+    handleCancel = (e) => {
+        this.setState({
+            loginVisible: false,
+            registerVisible: false,
+            isLogin: false,
+            isRegister: false,
         });
     }
     logout = () => {
         localStorage.removeItem('user');
+        window.location.reload();
         this.props.history.push('/app/dashboard/home')
     }
     popoverHide = () => {
         this.setState({
-            visible: false,
+            loginVisible: false,
         });
     }
     handleVisibleChange = (visible) => {
@@ -121,24 +150,73 @@ class HeaderCustom extends Component {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                console.log('Received values of form: ', values);
+                console.log('login Received values of form: ', values);
                 const { fetchData } = this.props;
-                if (values.userName === 'admin' && values.password === 'admin'){
+
+                if (this.state.id === 1){
                     fetchData({funcName: 'admin', stateName: 'auth'});
                     message.success("管理员登录成功");
                 }
-                if (values.userName === 'guest' && values.password === 'guest'){
+                if (this.state.id === 0){
                     fetchData({funcName: 'guest', stateName: 'auth'});
                     message.success("用户登录成功");
+                }
+                var configLg = {
+                    id: this.state.id,
+                    password: values.passwordL || '',
+                    telephone: values.telephoneL || '',
+                }
+                this.getAdmin(configLg);
+            }
+        });
+        this.setState({
+            loginVisible: false,
+            isLogin: false,
+        });
+    }
+    handleSubmitRegister = (e) => {
+        e.preventDefault();
+        this.props.form.validateFields((err, values) => {
+            if (!err) {
+                console.log('register Received values of form: ', values);
+                const { fetchData } = this.props;
+                if (values.userNameR === 'admin' && values.passwordR === 'admin'){
+                    fetchData({funcName: 'admin', stateName: 'auth'});
+                    message.success("管理员注册成功");
+                }
+                if (values.userNameR === 'guest' && values.passwordR === 'guest'){
+                    fetchData({funcName: 'guest', stateName: 'auth'});
+                    message.success("用户注册成功");
                 }
             }
         });
         this.setState({
-            visible: false,
+            registerVisible: false,
+            isRegister: false,
         });
+    }
+    getAdmin(config){
+        this.props.dispatch(getAdmin(config)).then(() => {
+            console.log('header this.props');
+            console.log(this.props.home.admin);
+            if (!!this.props.home) {
+
+                this.setState({
+                    adminMessage: this.props.home.admin,
+                    // webpageCount: this.props.home.webpageCount,
+                    // year: new Date().getFullYear(),
+                });
+            }
+        })
     }
     gitHub = () => {
         window.location.href = 'https://github.com/login/oauth/authorize?client_id=792cdcd244e98dcd2dee&redirect_uri=http://localhost:3006/&scope=user&state=reactAdmin';
+    }
+    onChangeSelect = (e) => {
+        console.log('radio checked', e.target.value);
+        this.setState({
+            id: e.target.value,
+        });
     }
     render() {
         const { responsive, path } = this.props;
@@ -149,7 +227,7 @@ class HeaderCustom extends Component {
             <Header style={{ background: '#fff', padding: 0, height: 65 }} className="custom-theme" >
                 {
                     responsive.data.isMobile ? (
-                        <Popover content={<SiderCustom path={path} popoverHide={this.popoverHide} />} trigger="click" placement="bottomLeft" visible={this.state.visible} onVisibleChange={this.handleVisibleChange}>
+                        <Popover content={<SiderCustom path={path} popoverHide={this.popoverHide} />} trigger="click" placement="bottomLeft" visible={this.state.loginVisible} onVisibleChange={this.handleVisibleChange}>
                             <Icon type="bars" className="trigger custom-trigger" />
                         </Popover>
                     ) : (
@@ -178,7 +256,12 @@ class HeaderCustom extends Component {
                             {/*<Menu.Item key="setting:1">你好 - {this.props.user.userName}</Menu.Item>*/}
                             <Menu.Item key="setting:2">个人信息</Menu.Item>
                             {
-                                this.state.user.userName?<Menu.Item key="logout"><span onClick={this.logout}>退出登录</span></Menu.Item>:<Menu.Item key="login"><span onClick={this.showModal}>登录</span></Menu.Item>
+                                this.state.user.userName&&
+                                <Menu.Item key="logout"><span onClick={this.logout}>退出登录</span></Menu.Item>
+                            }
+                            {
+                                !this.state.user.userName&&
+                                <Menu.Item key="login"><span onClick={this.showModal}>登录</span></Menu.Item>
                             }
                         </MenuItemGroup>
                         <MenuItemGroup title="设置中心">
@@ -188,24 +271,30 @@ class HeaderCustom extends Component {
                     </SubMenu>
                 </Menu>
 
-                <Modal title="登录" footer={null} style={{maxWidth: '400px'}} visible={this.state.visible} onOk={this.handleOk} onCancel={this.handleCancel} >
+                <Modal title="登录" footer={null} style={{maxWidth: '400px'}} visible={this.state.loginVisible} onOk={this.handleOk} onCancel={this.handleCancel} >
                     <Form onSubmit={this.handleSubmit}>
                         <FormItem>
-                            {getFieldDecorator('userName', {
-                                rules: [{ required: true, message: '请输入用户名!' }],
+                            {getFieldDecorator('telephoneL', {
+                                rules: [{ required: this.state.isRegister, max: 11,pattern: /^1([3489])[0-9]{9}$/, message: '请正确输入电话号码!' }],
                             })(
-                                <Input prefix={<Icon type="user" style={{ fontSize: 13 }} />} placeholder="管理员输入admin, 游客输入guest" />
+                                <Input prefix={<Icon type="user" style={{ fontSize: 13 }} />} placeholder="" />
                             )}
                         </FormItem>
                         <FormItem>
-                            {getFieldDecorator('password', {
-                                rules: [{ required: true, message: '请输入密码!' }],
+                            {getFieldDecorator('passwordL', {
+                                rules: [{ required: this.state.isLogin, message: '请输入密码!' }],
                             })(
-                                <Input prefix={<Icon type="lock" style={{ fontSize: 13 }} />} type="password" placeholder="管理员输入admin, 游客输入guest" />
+                                <Input prefix={<Icon type="lock" style={{ fontSize: 13 }} />} type="password" placeholder="" />
                             )}
                         </FormItem>
                         <FormItem>
-                            {getFieldDecorator('remember', {
+                                <RadioGroup onChange={this.onChangeSelect} value={this.state.id}>
+                                    <Radio value={0}>顾客</Radio>
+                                    <Radio value={1}>商户</Radio>
+                                </RadioGroup>
+                        </FormItem>
+                        <FormItem>
+                            {getFieldDecorator('rememberL', {
                                 valuePropName: 'checked',
                                 initialValue: true,
                             })(
@@ -224,37 +313,37 @@ class HeaderCustom extends Component {
                 </Modal>
 
                 <Modal title="注册" footer={null} style={{maxWidth: '400px'}} visible={this.state.registerVisible} onOk={this.handleOk} onCancel={this.handleCancel} >
-                    <Form onSubmit={this.handleSubmit} style={{maxWidth: '300px'}}>
+                    <Form onSubmit={this.handleSubmitRegister} style={{maxWidth: '300px'}}>
                         <FormItem>
-                            {getFieldDecorator('userName', {
-                                rules: [{ required: true, message: '请输入用户名!' }],
+                            {getFieldDecorator('userNameR', {
+                                rules: [{ required: this.state.isRegister, message: '请输入用户名!' }],
                             })(
                                 <Input prefix={<Icon type="user" style={{ fontSize: 13 }} />} placeholder="管理员输入admin, 游客输入guest" />
                             )}
                         </FormItem>
                         <FormItem>
-                            {getFieldDecorator('password', {
-                                rules: [{ required: true, message: '请输入密码!' }],
+                            {getFieldDecorator('passwordR', {
+                                rules: [{ required: this.state.isRegister, message: '请输入密码!' }],
                             })(
                                 <Input prefix={<Icon type="lock" style={{ fontSize: 13 }} />} type="password" placeholder="管理员输入admin, 游客输入guest" />
                             )}
                         </FormItem>
                         <FormItem>
-                            {getFieldDecorator('telephone', {
-                                rules: [{ required: true, max: 11,pattern: /^1([3489])[0-9]{9}$/, message: '请正确输入电话号码!' }],
+                            {getFieldDecorator('telephoneR', {
+                                rules: [{ required: this.state.isRegister, max: 11,pattern: /^1([3489])[0-9]{9}$/, message: '请正确输入电话号码!' }],
                             })(
                                 <Input prefix={<Icon type="phone" style={{ fontSize: 13 }} />} type="text" placeholder="管理员输入admin, 游客输入guest" />
                             )}
                         </FormItem>
                         <FormItem>
-                            {getFieldDecorator('address', {
-                                rules: [{ required: true, message: '请输入地址!' }],
+                            {getFieldDecorator('addressR', {
+                                rules: [{ required: this.state.isRegister, message: '请输入地址!' }],
                             })(
                                 <Input prefix={<Icon type="home" style={{ fontSize: 13 }} />} type="text" placeholder="需要输入详细地址" />
                             )}
                         </FormItem>
                         <FormItem>
-                            {getFieldDecorator('remember', {
+                            {getFieldDecorator('rememberR', {
                                     valuePropName: 'checked',
                                     initialValue: false,
                                 })(

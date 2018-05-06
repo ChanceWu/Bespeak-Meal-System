@@ -12,16 +12,24 @@ import Content1 from './Content1';
 import Content2 from './Content2';
 import Content3 from './Content3';
 import '../../style/less/antMotion_style.less';
-import { weibo } from '../../axios';
+// import { weibo } from '../../axios';
+import { connect } from 'react-redux';
+import { getAdmin } from '../../action/home';
+
 
 const scrollScreen = ScrollAnim.scrollScreen;
-
+@connect(state => ({
+    home: state.home,
+}))
 // let isMobile;
 // enquireScreen((b) => {
 //   isMobile = b;
 // });
 
 export default class Home extends React.Component {
+    static contextTypes = {
+        route: React.PropTypes.object
+    };
     constructor(props) {
         super(props);
         this.state = {
@@ -30,10 +38,21 @@ export default class Home extends React.Component {
         };
     }
     componentDidMount() {
-        console.log("weibo success1");
-        weibo().then( res => {
-            console.log("weibo success");
-        });
+        // this.props.dispatch(getAdmin()).then(() => {
+        //     console.log('this.props');
+        //     console.log(this.props.home.admin);
+        //     // if (!!this.props.home) {
+
+        //     //     this.setState({
+        //     //         // webpageCount: this.props.home.webpageCount,
+        //     //         // year: new Date().getFullYear(),
+        //     //     });
+        //     // }
+        // })
+        // console.log("weibo success1");
+        // weibo().then( res => {
+        //     console.log("weibo success");
+        // });
         // 适配手机屏幕;
         // enquire.register('screen and (max-width: 900px)',{
         //     match(e){

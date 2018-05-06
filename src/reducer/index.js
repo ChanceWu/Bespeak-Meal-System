@@ -3,6 +3,7 @@
  */
 import { combineReducers } from 'redux';
 import * as type from '../action/type';
+import home from './home';
 
 const handleData = (state = {isFetching: true, data: {}}, action) => {
     switch (action.type) {
@@ -28,5 +29,6 @@ const httpData = (state = {}, action) => {
 };
 
 export default combineReducers({
-    httpData
+    httpData,
+    home,
 });
