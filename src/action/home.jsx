@@ -10,7 +10,7 @@ const {
 export function getAdmin(config, query = '') {
 	return async(dispatch) => {
 		try {
-			const data = (await axios.post(`http://125.67.175.88:27105${query}`,qs.stringify(config))).data;
+			const data = (await axios.post(`http://10.240.140.206:27105${query}`,qs.stringify(config))).data;
 			dispatch({
 				type: GET_ADMIN_SUCCESS,
 				data: data
