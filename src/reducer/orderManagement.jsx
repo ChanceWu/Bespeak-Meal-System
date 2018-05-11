@@ -1,30 +1,28 @@
 import actions from '../action/actions';
 
 const {
-	GET_ADMIN_SUCCESS,
-    GET_ADMIN_FAILURE,
+	GET_ORDER_SUCCESS,
+	GET_ORDER_FAILURE,
 
-    REGISTER_USER_SUCCESS,
-    REGISTER_USER_FAILURE,
+	UPDATE_ORDER_SUCCESS,
+	UPDATE_ORDER_FAILURE,
 
-    REGISTER_ADMIN_SUCCESS,
-    REGISTER_ADMIN_FAILURE,
-
+	DELETE_ORDER_SUCCESS,
+	DELETE_ORDER_FAILURE,
 } = actions;
-
 export default (state = {}, action) => {
 	switch (action.type) {
-		case GET_ADMIN_SUCCESS:
+		case GET_ORDER_SUCCESS:
 			return {
 				...state,
 				data:action.data,
 			};
-		case REGISTER_USER_SUCCESS:
+		case UPDATE_ORDER_SUCCESS:
 			return {
 				...state,
 				data:action.data,
 			};
-		case REGISTER_ADMIN_SUCCESS:
+		case DELETE_ORDER_SUCCESS:
 			return {
 				...state,
 				data:action.data,

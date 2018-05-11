@@ -5,6 +5,8 @@ import { combineReducers } from 'redux';
 import * as type from '../action/type';
 import home from './home';
 import adminMessage from './adminMessage';
+import dishManagement from './dishManagement';
+import orderManagement from './orderManagement';
 
 const handleData = (state = {isFetching: true, data: {}}, action) => {
     switch (action.type) {
@@ -33,4 +35,6 @@ export default combineReducers({
     httpData,
     home,
     adminMessage,
+    dishManagement,
+    orderManagement,
 });

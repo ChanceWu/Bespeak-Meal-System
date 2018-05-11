@@ -10,3 +10,6 @@ export const MOCK_AUTH_ADMIN = MOCK_AUTH + '/admin';                           /
 export const MOCK_AUTH_VISITOR = MOCK_AUTH + '/visitor';                       // 访问权限接口
 
 
+export default{
+	baseUrl: "http://10.240.212.116:27105",
+}

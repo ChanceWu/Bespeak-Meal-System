@@ -2,14 +2,8 @@ export const menusAdmin = [
     { key: '/app/dashboard/home', title: '主页', icon: 'home', },
     { key: '/app/management/dishManagement', title: '餐品管理', icon: 'appstore-o', },
     { key: '/app/management/orderManagement', title: '订餐管理', icon: 'bell', },
-    { 
-        key: '/app/management/message', title: '信息管理', icon: 'shop',
-        sub: [
-            { key: '/app/management/message/storeMessage', title: '商店信息', icon: '' },
-            { key: '/app/management/message/adminMessage', title: '店主信息', icon: '' },
-        ],
-    },
-    {
+    { key: '/app/management/message/adminMessage', title: '信息管理', icon: 'shop', },
+    /*{
         key: '/app/table', title: '表格', icon: 'copy',
         sub: [
             { key: '/app/table/basicTable', title: '基础表格', icon: '', },
@@ -44,20 +38,13 @@ export const menusAdmin = [
             { key: '/app/auth/basic', title: '基础演示', icon: '', },
             { key: '/app/auth/routerEnter', title: '路由拦截', icon: '', },
         ],
-    },
+    },*/
 ];
 
 export const menusCustom = [
     { key: '/app/dashboard/home', title: '主页', icon: 'home', },
-    {
-        key: '/app/category', title: '分类', icon: 'appstore',
-        sub: [
-            { key: '/app/category/all', title: '全部', icon: '', },
-            { key: '/app/category/meals', title: '主餐', icon: '', },
-            { key: '/app/category/dessert', title: '甜点', icon: '', },
-        ],
-    },
-    { key: '/app/shopping/shoppingCart', title: '我的购物车', icon: 'shopping-cart', },
+    { key: '/app/category/all', title: '点餐', icon: 'appstore',},
+    /*{ key: '/app/shopping/shoppingCart', title: '我的购物车', icon: 'shopping-cart', },*/
     { key: '/app/order/newOrder', title: '我的订单', icon: 'bell', },
     { key: '/app/user/userMessage', title: '个人信息', icon: 'solution', },
 ];

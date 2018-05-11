@@ -1,146 +1,359 @@
 import React from 'react';
-import { Table, Input, Button, Icon, Popconfirm } from 'antd';
+import { 
+  Row,
+  Col,
+  Table,
+  Input,
+  Modal,
+  Button,
+  Icon,
+  Popconfirm,
+  Form,
+  message,
+  Radio,
+  Tooltip,
+} from 'antd';
+import {connect} from 'react-redux';
 import EditableCell from './EditableCell';
 import BreadcrumbCustom from '../BreadcrumbCustom';
 import ManageTag from './ManageTag';
+import {
+    getDish,
+    addDish,
+    deleteDish,
+    updateDish,
+    findDish,
+} from '../../action/dishManagement';
 
 import '../../style/dishManagement.less';
 
+const FormItem = Form.Item;
+const RadioGroup = Radio.Group;
+const { TextArea } = Input;
 
+@connect(state => ({
+    dishManagement: state.dishManagement,
+}))
 class DishManagememt extends React.Component {
   constructor(props) {
     super(props);
-    this.columns = [{
-      title: '菜名',
-      dataIndex: 'name',
-      width: '30%',
-      render: (text, record) => (
-        <EditableCell
-          value={text}
-          onChange={this.onCellChange(record.key, 'name')}
-        />
-      ),
-    }, {
-      title: '价格',
-      dataIndex: 'price',
-    }, {
-      title: '描述',
-      dataIndex: 'describe',
-    }, {
-      title: '操作',
-      dataIndex: 'operation',
-      render: (text, record) => {
-        return (
-          this.state.dataSource.length > 1 ?
-          (
-            <Popconfirm title="Sure to delete?" onConfirm={() => this.onDelete(record.key)}>
-              <a href="#">Delete</a>
-            </Popconfirm>
-          ) : null
-        );
-      },
-    }];
-
     this.state = {
-      dataSource: [{
-        key: '0',
-        name: 'Edward King 0',
-        price: '32',
-        describe: 'London, Park Lane no. 0',
-      }, {
-        key: '1',
-        name: 'Edward King 1',
-        price: '32',
-        describe: 'London, Park Lane no. 1',
-      }],
-      count: 2,
-      selectedRowKeys: [], // Check here to configure the default column
-    };
+      uid: 1,
+      telephone: '18281579337',
+      password: '123456',
+
+      selectedKeys: [],
+      visibleAdd: false,
+      visibleUpdate: false,
+      isMounted: false,
+      addModalKey: 'addOn',
+      updateModalKey: 'updateOn',
+      data: '',
+      id: '',
+      foodName: '',
+      foodPrice: '',
+      foodDescription: '',
+    }
   }
-  onCellChange = (key, dataIndex) => {
-    return (value) => {
-      const dataSource = [...this.state.dataSource];
-      const target = dataSource.find(item => item.key === key);
-      if (target) {
-        target[dataIndex] = value;
-        this.setState({ dataSource });
+
+  componentDidMount() {
+    this.getDishList();
+  };
+  getDishList(){
+    this.props.dispatch(getDish({
+      shopid: JSON.parse(localStorage.getItem('loginMessage')).shopid,
+      action: 'getDishes',
+    })).then(() => {
+      console.log('this.props.dishManagement');
+      console.log(this.props.dishManagement.data);
+      if (!!this.props.dishManagement.data) {
+        this.setState({
+          data: this.props.dishManagement.data.array,
+        });
       }
-    };
-  }
-  onDelete = (key) => {
-    const dataSource = [...this.state.dataSource];
-    this.setState({ dataSource: dataSource.filter(item => item.key !== key) });
-  }
-  handleAdd = () => {
-    const { count, dataSource } = this.state;
-    const newData = {
-      key: count,
-      name: `Edward King ${count}`,
-      price: 32,
-      describe: `London, Park Lane no. ${count}`,
-    };
-    this.setState({
-      dataSource: [...dataSource, newData],
-      count: count + 1,
     });
   }
-  onSelectChange = (selectedRowKeys) => {
-    console.log('selectedRowKeys changed: ', selectedRowKeys);
-    this.setState({ selectedRowKeys });
-  }
-  render() {
-    const { dataSource, selectedRowKeys } = this.state;
-    const columns = this.columns;
-    const rowSelection = {
-      selectedRowKeys,
-      onChange: this.onSelectChange,
-      hideDefaultSelections: true,
-      selections: [{
-        key: 'all-data',
-        text: 'Select All Data',
-        onSelect: () => {
+  
+  showAddModal(e) {
+    this.props.form.resetFields();
+    this.setState({
+      addModalKey: 'addOn',
+      visibleAdd: true,
+    });
+  };
+  handleAddOk(e) {
+    e.preventDefault();
+    this.props.form.validateFields((errors, values) => {
+      // debugger;
+      if (!!errors.getFoodName || !!errors.getPrice || !!errors.getFoodDescription) {
+        message.warning('请确认填写无误！');
+        return;
+      }
+      const OrderPackage = {
+        shopid: JSON.parse(localStorage.getItem('loginMessage')).shopid,
+        // id: '',
+        foodName: values.getFoodName,
+        foodPrice: values.getPrice,
+        foodDescription: values.getFoodDescription,
+        action: 'addDishes',
+      }
+      this.props.dispatch(addDish(OrderPackage)).then(() => {
+        if (this.props.dishManagement.data == "SUCCESS!") {
+          message.success('餐品添加成功！');
+          
+          this.getDishList();
           this.setState({
-            selectedRowKeys: [...Array(46).keys()], // 0...45
+            visibleAdd: false,
+            addModalKey: 'addOff',
           });
-        },
-      }, {
-        key: 'odd',
-        text: 'Select Odd Row',
-        onSelect: (changableRowKeys) => {
-          let newSelectedRowKeys = [];
-          newSelectedRowKeys = changableRowKeys.filter((key, index) => {
-            if (index % 2 !== 0) {
-              return false;
+        } else {
+          message.error('餐品添加失败！');
+        }
+      });
+    })
+  }
+  handleAddCancel() {
+    this.setState({
+      addModalKey: 'addOff',
+      visibleAdd: false,
+    });
+    this.props.form.resetFields();
+  }
+
+  delete() {
+    
+    if (!this.state.selectedKeys.length) {
+      message.warning("请选择！");
+      return;
+    }
+    this.props.dispatch(deleteDish({
+      id: this.state.selectedKeys,
+      action: "deleteDishes",
+    })).then(() => {
+      console.log('this.props.dishManagement.data');
+      console.log(this.props.dishManagement.data);
+      if (this.props.dishManagement.data == 'SUCCESS!') {
+        message.success('删除餐品成功!');
+        
+        this.getDishList();
+      } else {
+        message.error("删除餐品失败！");
+      }
+    });
+    this.setState({
+        ...this.state,
+        selectedKeys: '',
+    });
+  }
+
+  showUpdateModal(record) {
+    // console.log(record);
+    this.props.form.resetFields();
+    this.setState({
+      visibleUpdate: true,
+      updateModalKey: 'updateOn',
+      id: record.id,
+      foodName: record.name,
+      foodPrice: record.price,
+      foodDescription: record.description,
+    });
+  };
+  handleUpdateOk(e) {
+    e.preventDefault();
+    this.props.form.validateFields((errors, values) => {
+      if (!!errors.updateFoodName || !!errors.updatePrice || !!errors.updateFoodDescription) {
+        message.warning('请确认填写无误！');
+        return;
+      }
+      const OrderPackage = {
+        id: this.state.id,
+        foodPrice: values.updatePrice,
+        foodDescription: values.updateFoodDescription,
+        action: 'updateDishes',
+      }
+      this.props.dispatch(updateDish(OrderPackage)).then(() => {
+        if (this.props.dishManagement.data == "SUCCESS!") {
+          this.setState({
+            visibleUpdate: true,
+            id: '',
+            foodName: '',
+            foodPrice: '',
+            foodDescription: '',
+          });
+          this.props.dispatch(getDish({
+            shopid: JSON.parse(localStorage.getItem('loginMessage')).shopid,
+            action: 'getDishes',
+          })).then(() => {
+            if (!!this.props.dishManagement.data) {
+              this.setState({
+                data: this.props.dishManagement.data.array,
+                visibleUpdate: false,
+                updateModalKey: 'updateOff',
+              });
+              message.success("餐品修改成功！");
+            } else {
+              message.error("餐品修改失败！");
             }
-            return true;
           });
-          this.setState({ selectedRowKeys: newSelectedRowKeys });
-        },
-      }, {
-        key: 'even',
-        text: 'Select Even Row',
-        onSelect: (changableRowKeys) => {
-          let newSelectedRowKeys = [];
-          newSelectedRowKeys = changableRowKeys.filter((key, index) => {
-            if (index % 2 !== 0) {
-              return true;
-            }
-            return false;
-          });
-          this.setState({ selectedRowKeys: newSelectedRowKeys });
-        },
-      }],
-      onSelection: this.onSelection,
+        } else {
+          message.error("餐品修改失败！");
+        }
+      });
+    });
+  }
+  handleUpdateCancel() {
+    this.setState({
+        visibleUpdate: false,
+        updateModalKey: 'updateOff',
+        id: '',
+    })
+    this.props.form.resetFields();
+  }
+
+  render() {
+    const rowSelection = {
+      onChange: function(selectedRowKeys, selectedRows) {
+        this.setState({
+          ...this.state,
+          selectedKeys: selectedRowKeys.join(','),
+        });
+      }.bind(this),
     };
+    let {
+        getFieldDecorator
+    } = this.props.form;
+    const formItemLayout = {
+        labelCol: {
+            span: 7
+        },
+        wrapperCol: {
+            span: 12
+        },
+    };
+    const columns = [{
+        title: '序号',
+        dataIndex: 'num',
+    }, {
+        title: '餐名',
+        dataIndex: 'foodName',
+    }, {
+        title: '单价',
+        dataIndex: 'foodPrice',
+    }, {
+        title: '餐品描述',
+        dataIndex: 'foodDescription',
+    }, {
+        title: '操作',
+        dataIndex: 'id',
+        render: (text, record) => {
+            return (
+              <Tooltip title="编辑">
+                <Button onClick={this.showUpdateModal.bind(this,record)} type="primary" size="small"  shape="circle" icon="edit" />
+              </Tooltip>
+            )
+        }
+    }];
+    let Data = this.state.data;
+    let dataSource;
+    if (!Data) {
+      dataSource = null;
+    } else {
+      dataSource = Data.map((item, index) => ({
+        ...item,
+        key: item.id,
+        num: index + 1,
+        foodName: item.name,
+        foodPrice: item.price,
+        foodDescription: item.description,
+      }));
+    }
     return (
       <div>
         <BreadcrumbCustom first="餐品管理" />
-        <Button className="editable-add-btn" onClick={this.handleAdd}>添加</Button>
-        <Button className="editable-add-btn" onClick={this.handleAdd}>删除</Button>
-        <Table rowSelection={rowSelection} bordered dataSource={dataSource} columns={columns} />
+        <Row style={{marginTop:'8px'}}>
+          <Col span={2} style={{float:'right'}}>
+            <Button  icon="minus-circle-o" onClick={this.delete.bind(this)}>删除</Button>
+          </Col>   
+          <Col span={2} style={{float:'right'}}>
+            <Button  icon="plus-circle-o" onClick={this.showAddModal.bind(this)} >添加</Button>
+          </Col>
+        </Row>
+        <Table size="middle" style={{marginTop:'10px'}} rowSelection={rowSelection} columns={columns} dataSource={dataSource} />
+
+        <Modal ref="modal" key={this.state.addModalKey} visible={this.state.visibleAdd}
+            title="添加套餐" onOk={this.handleAddOk.bind(this)} onCancel={this.handleAddCancel.bind(this)}
+            footer={[
+            <Button key="back" type="ghost" size="large" onClick={this.handleAddCancel.bind(this)}>取消</Button>,
+            <Button key="submit" type="primary" size="large"  onClick={this.handleAddOk.bind(this)}>确定</Button>,
+          ]}>
+            <Form >
+                <FormItem {...formItemLayout} label="餐名" hasFeedback>
+                    {getFieldDecorator('getFoodName',{
+                        initialValue:null,
+                        rules:[{
+                            required:true,
+                            message:'套餐名不能为空'
+                        }],
+                    })(<Input placeholder="" autoComplete="off" />)}
+                </FormItem>
+                <FormItem {...formItemLayout} label="单价" hasFeedback>
+                    {getFieldDecorator('getPrice',{
+                        initialValue:this.state.foodPrice,
+                        rules:[{
+                            required:true,
+                            message:'用户数不能为空'
+                        },{
+                            pattern:/^(([0-9]+)|([0-9]+\.[0-9]{1,2}))$/,
+                            message:'请输入有效的费用'
+                        }],
+                    })(<Input placeholder="" autoComplete="off" />)}
+                </FormItem>
+                <FormItem {...formItemLayout} label="餐品描述" hasFeedback>
+                    {getFieldDecorator('getFoodDescription',{
+                        
+                    })(<TextArea autosize={{ minRows: 3, maxRows: 6 }} placeholder="" autoComplete="off" />)}
+                </FormItem>
+            </Form>
+        </Modal>
+        <Modal ref="modal1" key={this.state.updateModalKey} visible={this.state.visibleUpdate}
+          title="修改套餐" onOk={this.handleUpdateOk.bind(this)} onCancel={this.handleUpdateCancel.bind(this)}
+          footer={[
+            <Button key="back" type="ghost" size="large" onClick={this.handleUpdateCancel.bind(this)}>取消</Button>,
+            <Button key="submit" type="primary" size="large"  onClick={this.handleUpdateOk.bind(this)}>确定</Button>,
+          ]}>
+            <Form >
+                <FormItem {...formItemLayout} label="餐名" hasFeedback>
+                    {getFieldDecorator('updateFoodName',{
+                        initialValue:this.state.foodName,
+                        rules:[{
+                            required:true,
+                            message:'套餐名不能为空'
+                        }],
+                    })(<Input placeholder="" autoComplete="off" />)}
+                </FormItem>
+                <FormItem {...formItemLayout} label="单价" hasFeedback>
+                    {getFieldDecorator('updatePrice',{
+                        initialValue:this.state.foodPrice,
+                        rules:[{
+                            required:true,
+                            message:'用户数不能为空'
+                        },{
+                            pattern:/^(([0-9]+)|([0-9]+\.[0-9]{1,2}))$/,
+                            message:'请输入有效的费用'
+                        }],
+                    })(<Input placeholder="" autoComplete="off" />)}
+                </FormItem>
+                <FormItem {...formItemLayout} label="餐品描述">
+                    {getFieldDecorator('updateFoodDescription',{
+                        initialValue:this.state.foodDescription,
+                        
+                    })(<TextArea autosize={{ minRows: 3, maxRows: 6 }} placeholder="" autoComplete="off" />)}
+                </FormItem>
+            </Form>
+        </Modal>
       </div>
     );
   }
 }
 
-export default DishManagememt;
+export default Form.create()(DishManagememt);

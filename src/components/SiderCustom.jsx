@@ -26,7 +26,20 @@ class SiderCustom extends Component {
     componentDidMount() {
         console.log('this.props.auth.data');
         console.log(this.props.auth.data);
-        if(this.props.auth.data&&this.props.auth.data.uid==1){
+        if(localStorage.getItem('loginMessage')&&JSON.parse(localStorage.getItem('loginMessage')).role==1){
+            this.setState({
+                menusSider: menusAdmin,
+            });
+        }else if(localStorage.getItem('loginMessage')&&JSON.parse(localStorage.getItem('loginMessage')).role==0){
+            this.setState({
+                menusSider: menusCustom,
+            });
+        }else{
+            this.setState({
+                menusSider: menus,
+            });
+        }
+        /*if(this.props.auth.data&&this.props.auth.data.uid==1){
             this.setState({
                 menusSider: menusAdmin,
             });
@@ -38,7 +51,7 @@ class SiderCustom extends Component {
             this.setState({
                 menusSider: menus,
             });
-        }
+        }*/
         
         this.setMenuOpen(this.props);
     }

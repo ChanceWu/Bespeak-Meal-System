@@ -1,110 +1,119 @@
 import React from 'react';
-import { Table, Icon, Switch, Radio, Form } from 'antd';
+import { Table, Icon, Switch, Radio, Form, message } from 'antd';
 import BreadcrumbCustom from '../BreadcrumbCustom';
+import {connect} from 'react-redux';
 import ManageTag from './ManageTag';
+import {
+    getOrder,
+    updateOrder,
+} from '../../action/orderManagement';
+import {timeFormat} from '../../utils/index';
 const FormItem = Form.Item;
 
-const columns = [{
-  title: '菜名',
-  dataIndex: 'dish',
-  key: 'dish',
-  width: 100,
-  render: text => <a href="#">{text}</a>,
-}, {
-  title: '顾客',
-  dataIndex: 'customer',
-  key: 'customer',
-  width: 150,
-}, {
-  title: '送餐地址',
-  dataIndex: 'orderAddress',
-  key: 'orderAddress',
-}, {
-	title: '价格',
-	dataIndex: 'price',
-	key: 'price',
-}, {
-  title: 'orderTime',
-  dataIndex: 'orderTime',
-  key: 'orderTime',
-}, {
-	title: '订餐状态',
-	dataIndex: 'status',
-	key: 'status',
-}, {
-  title: '操作',
-  key: 'action',
-  render: (text, record) => (
-    <span>
-      <span style={{float: 'left'}}><ManageTag /></span>
-    </span>
-  ),
-}];
-
-const data = [];
-for (let i = 1; i <= 20; i++) {
-  let date = new Date();
-  data.push({
-    key: i,
-    dish: '红烧肉',
-    customer: `西科大${i}`,
-    orderAddress: `西南科技大学 No. ${i} 号`,
-    price: `${i}元`,
-    orderTime: date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate()+' '+date.getHours()+':'+date.getMinutes()+':'+date.getSeconds(),
-    status: '顾客已付款',
-    description: '加点酸菜。',
-  });
-}
-
-const expandedRowRender = record => <p>{record.description}</p>;
-const showHeader = true;
-const scroll = { y: 240 };
+@connect(state=>({
+  orderManagement: state.orderManagement,
+}))
 
 class OrderManagememt extends React.Component {
-  	state = {
-    	bordered: true,
-    	pagination: true,
-    	expandedRowRender,
-    	showHeader: true,
-    	scroll: undefined,
-  	}
+	constructor(props) {
+    super(props);
+    this.state = {
+      data: '',
+    }
+  }
 
-  	handleToggle = (prop) => {
-    	return (enable) => {
-      		this.setState({ [prop]: enable });
-    	};
-  	}
+	componentDidMount(){
+    this.getUserList();
+  }
+  getUserList(){
+    this.props.dispatch(getOrder({
+      shopid: JSON.parse(localStorage.getItem('loginMessage')).shopid,
+      action: 'getOrder',
+    })).then(() => {
+      if(!!this.props.orderManagement.data){
+        this.setState({
+          data: this.props.orderManagement.data.array,
+        });
+      }
+    });
+  }
+  /*点击图标修改激活状态*/
+  handleUpdateIsActiveOk(record){
+    // record.isActive = record.isActive-0;
+    console.log(!!record.isActive);
+    this.props.dispatch(updateOrder({
+      isActive:record.isActive?0:1,
+      orderId:record.orderid,
+      action: "updateOrder",
+    })).then(()=>{
+      if(this.props.orderManagement.data==='SUCCESS!'){
+        message.success('激活状态修改成功！');
+        this.getUserList();
+      }
+    })
+  }
 
-  	handleExpandChange = (enable) => {
-    	this.setState({ expandedRowRender: enable ? expandedRowRender : undefined });
-  	}
-
-  	handleScollChange = (enable) => {
-    	this.setState({ scroll: enable ? scroll : undefined });
-  	}
-
-  	render() {
-    	const state = this.state;
-    	return (
-      		<div>
-      			<BreadcrumbCustom first="订餐管理" />
-        		<div className="components-table-demo-control-bar">
-          			<Form layout="inline">
-            			<FormItem label="是否分页">
-              				<Switch checked={state.pagination} onChange={this.handleToggle('pagination')} />
-            			</FormItem>
-            			<FormItem label="展示详细信息">
-              				<Switch checked={!!state.expandedRowRender} onChange={this.handleExpandChange} />
-            			</FormItem>
-            			<FormItem label="切换模式">
-              				<Switch checked={!!state.scroll} onChange={this.handleScollChange} />
-            			</FormItem>
-          			</Form>
-        		</div>
-        		<Table {...this.state} columns={columns} dataSource={data} />
-      		</div>
-    	);
-  	}
+	render() {
+  	const state = this.state;
+    const columns = [{
+      title: '序号',
+      dataIndex: 'num',
+    },{
+      title: '用户名',
+      dataIndex: 'userName',
+    }, {
+      title: '用户电话',
+      dataIndex: 'userTelephone',
+    }, {
+      title: '用户地址',
+      dataIndex: 'userAddress',
+    },{
+      title: '餐名',
+      dataIndex: 'foodName',
+    }, {
+      title: '数量',
+      dataIndex: 'foodNumber',
+    },{
+      title: '状态',
+      dataIndex: 'isActive',
+      render:(text,record)=>(
+        <div onClick={this.handleUpdateIsActiveOk.bind(this,record)} >
+          <Icon type={record.isActive? "check-circle":"close-circle"} 
+          style={{fontSize:18,color:record.isActive? "#87d068":"#f56a00"}}/>
+          <ManageTag isActive={record.isActive} />
+        </div>)
+    },{
+      title: '下单时间',
+      dataIndex: 'orderTime',
+      // render:(text)=>(timeFormat(text/1000))
+    }];
+    let Data = this.state.data;
+    let dataSource;
+    if(!Data){
+      dataSource = null;
+    }else{
+      dataSource=Data.map((item,index)=>{
+        return {
+          ...item,
+          num:index+1,
+          key:item.orderid,
+          userName: item.cname,
+          userTelephone: item.phone,
+          userAddress: item.address,
+          foodName: item.mealname,
+          foodNumber: item.number,
+          isActive: item.status-0,
+          orderTime: item.ortime,
+        }
+      });
+    }
+  	return (
+  		<div>
+  			<BreadcrumbCustom first="订餐管理" />
+    		<Table size="middle" style={{marginTop:'10px'}}  columns={columns} dataSource={dataSource} />
+  		</div>
+  	);
+	}
 }
 
 export default OrderManagememt

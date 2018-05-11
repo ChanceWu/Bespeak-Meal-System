@@ -1,21 +1,93 @@
 import React from 'react';
-import { Row, Col, Card, Collapse } from 'antd';
+import { Row, Col, Card, Collapse,Form,message,Modal,Button } from 'antd';
 import BreadcrumbCustom from '../BreadcrumbCustom';
 import MyTag from './MyTag';
 import PhotoSwipe from 'photoswipe';
 import PhotoswipeUIDefault from 'photoswipe/dist/photoswipe-ui-default';
 import 'photoswipe/dist/photoswipe.css';
 import 'photoswipe/dist/default-skin/default-skin.css';
+import { connect } from 'react-redux';
+import { 
+    getAllDishes,
+    insertDish,
+} from '../../action/dishManagement';
+import food_home0 from '../../style/imgs/food_home0.jpg';
+import food_home1 from '../../style/imgs/food_home1.jpg';
+import food_home2 from '../../style/imgs/food_home2.jpg';
+import food_home3 from '../../style/imgs/food_home3.jpg';
+const FormItem = Form.Item;
+@connect(state => ({
+    dishManagement: state.dishManagement,
+}))
 
 class All extends React.Component {
-    state = {
-        gallery: null
-    };
+    constructor(props){
+        super(props);
+        this.state = {
+            gallery: null,
+            data: '',
+            isActive: '0',
+            visible: false,
+            v: '',
+        }
+    }
     componentDidMount() {
+        this.getAllDishesMessage();
+    }
+    getAllDishesMessage(){
+        this.props.dispatch(getAllDishes({
+            action: "getAllDishes",
+        })).then(() => {
+            console.log('this.props.getalldishesMessage');
+            console.log(this.props.dishManagement.data);
+            if (!!this.props.dishManagement) {
+                var getValue = this.props.dishManagement.data;
+                this.setState({
+                    data: getValue.array,
+                });
+            }
+        });
+    }
+    showModal(e){
+        console.log('e');
+        console.log(e);
+        this.setState({
+            visible: true,
+            v: e,
+        });
+    }
+    handleOk(){
+        this.insertTheDish(this.state.v);
+        this.setState({ visible: false });
+    }
+    handleCancel(){
+        this.setState({ visible: false,v: '',isActive: '0' });
+    }
+    insertTheDish(record){
+        console.log('insertDish.record');
+        console.log(record);
+        this.props.dispatch(insertDish({
+            userid: JSON.parse(localStorage.getItem('loginMessage')).id,
+            dishid: record,
+            num: 1,
+            action: "insertDish",
+        })).then(() => {
+            console.log('this.props.insertdish');
+            console.log(this.props.dishManagement.data);
+            if (this.props.dishManagement.data == 'SUCCESS!') {
+                message.success('订餐成功!');
+                this.setState({isActive: '1'});
+                this.getAllDishesMessage();
+            } else {
+                message.error("订餐失败！");
+                this.setState({isActive: '0'});
+            }
+        })
+        this.setState({ v: '', });
     }
     componentWillUnmount = () => {
         this.closeGallery();
-    };
+    }
     openGallery = (item) => {
         const items = [
             {
@@ -41,105 +113,69 @@ class All extends React.Component {
             }
         });
         this.gallery.init();
-    };
+    }
     closeGallery = () => {
         if (!this.gallery) return;
         this.gallery.close();
-    };
+    }
     render() {
-        const imgs = [
-            [
-                'http://img.hb.aicdn.com/1cad414972c5db2b8c1942289e3aeef37175006a8bb16-CBtjtX_fw',
-                'http://img.hb.aicdn.com/016f2e13934397e17c3482a4529f3da1149d37fd2a99c-RVM1Gi_fw',
-                'http://img.hb.aicdn.com/8c5d5f2bf6427d1b5ed8657a7ae0c9938d3465e367899-AJ0zVA_fw',
-                'http://img.hb.aicdn.com/bd71ccac0b16bbcade255a1a8a63504d71c7dee9a8652-zBCN9d_fw',
-                'http://img.hb.aicdn.com/37a40cb04345463858d45418ae6ed9ef319e30dc37a45-o4pQ0j_fw',
-
-            ],
-            [
-                'http://img.hb.aicdn.com/5fad6c3a14a9b80c4448835bb6b23ab895d18e234eff3-BPGmox_fw',
-                'http://img.hb.aicdn.com/a1a19de5dac212a646ba6967ef565786399fb1665bd04-EEvwzR_fw',
-                'http://img.hb.aicdn.com/06595f8044e881de3a82d691768bc8c21a2a9f3633d60-XKjC2s_fw',
-                'http://img.hb.aicdn.com/880787b36d45efbe05aa409c867db29a3028e02da7f9b-qxGib9_fw',
-                'http://img.hb.aicdn.com/4964b97f6f6eb61a20922b40842adf0169c44e491c4b60-azX1S7_fw'
-            ],
-            [
-                'http://img.hb.aicdn.com/ff97d00944edfc706c62dd5c0e955c4099a37b407534f-BcUqf0_fw',
-                'http://img.hb.aicdn.com/0e22be22b08c6f78b94283b6cfa890093ac3cae8401e7-b1ftfi_fw',
-                'http://img.hb.aicdn.com/879f870e15f7cc0847c8ae19a5fcbe974d5904bb181d7-RGmtNU_fw',
-                'http://img.hb.aicdn.com/b4a8e62958555a97dc3de9ccb03284bf556c042925522-x50qGv_fw',
-                'http://img.hb.aicdn.com/1ef493a15674e9fd523b248ea4ec43d2ea9ce6952ff3e-WavWKc_fw'
-            ],
-            [
-                'http://img.hb.aicdn.com/8e16efec78ac4a3684fc8999d18e3661af40fd4510a25-DDvQON_fw',
-                'http://img.hb.aicdn.com/61dfa024c8040e6a5bcb03d42928fbcb0c87c1a54e731-yc4lvV_fw',
-                'http://img.hb.aicdn.com/6783b4d7811ad7fb87b1446c5488b91179f7608118289-hpEyP3_fw',
-                'http://img.hb.aicdn.com/7be61ba6bdb20a73be63edc387b16eec72d0bbb51c7ef-XafA07_fw',
-                'http://img.hb.aicdn.com/bd3ba3f907fe098b911947e0020615b50fc340ed2df72-WsuHuM_fw'
-            ],
-            [
-                'http://img.hb.aicdn.com/71471aaac95eade66400a390863b37c76d9addcd14982-0H6sak_fw',
-                'http://img.hb.aicdn.com/cb16c68c4d3b7a08b5e91cd351f6b723634ca3fc27d4d-m1JD8z_fw',
-                'http://img.hb.aicdn.com/e3559b6e8d7237857382050e5659a64cc0b7d696a2869-stcRXA_fw',
-                'http://img.hb.aicdn.com/4ea229436fcf2077502953907a6afb16d3c5cd611b8e2-0dVIeH_fw',
-                'http://img.hb.aicdn.com/98c786f4314736f95a42bf927bf65a82d305a532c6258-njI6id_fw'
-            ]
-        ];
+        let Data = this.state.data;
+        let dataSource;
+        let imgsTag;
         const Panel = Collapse.Panel;
-        const text = `
-          张飞牛肉产于四川省阆中市，是具有浓厚的四川风味的特产。张飞牛肉表面为棕红色，切开后肉质纹丝紧密，不干、不燥、不软、不硬，食之咸淡适口，宴席配餐，伴酒佐餐均宜。
-        `;
-
         const customPanelStyle = {
             background: '#fff',
-             borderRadius: 4,
+            borderRadius: 4,
             marginBottom: 24,
             border: 0,
             overflow: 'hidden',
         };
-        const imgsTag = imgs.map(v1 => (
-            v1.map(v2 => (
-                <div className="gutter-box">
-                    <Card bordered={false} bodyStyle={{ padding: 0, height: 300 }}>
-                        <div>
-                            <img onClick={() => this.openGallery(v2)} alt="example" width="100%" height="240px" src={v2} />
-                            <div style={{position: 'absolute',bottom: 60,right:0,paddingRight:5,paddingLeft:5,fontSize: '30px',color: '#f00',backgroundColor: '#ccc',opacity: 0.7,borderRadius:5}}>￥32.5元</div>
-                        </div>
-                        <div className="pa-m">
-                            <h3>餐名<span style={{float: 'right'}}><MyTag /></span></h3>
-                            <small>商家名</small>
-                        </div>
-                    </Card>
-                    <Collapse bordered={false} >
-                        <Panel header="了解详细信息" style={customPanelStyle}>
-                            <p>{text}</p>
-                        </Panel>
-                    </Collapse>
-                </div>
-            ))
-        ));
+        let imgs = [food_home0,food_home1,food_home2,food_home3,food_home0,food_home1];
+        if(!Data){
+            dataSource = null;
+        }else{
+            dataSource = Data.map((item,index) =>({
+                key: item.id,
+                foodName: item.name,
+                foodPrice: item.price,
+                foodDescription: item.description,
+                shopname: item.shopname,
+                img: imgs[index],
+                isActive: '0',
+            }));
+
+            imgsTag = dataSource.map(v2 => (
+                <Col key={v2.key} className="gutter-row" md={4}>
+                    <div className="gutter-box">
+                        <Card bordered={false} bodyStyle={{ padding: 0, height: 300 }}>
+                            <div>
+                                <img onClick={() => this.openGallery(v2)} alt="商店图片" width="100%" height="240px" src={v2.img} />
+                                <div style={{position: 'absolute',bottom: 60,right:0,paddingRight:5,paddingLeft:5,fontSize: '30px',color: '#f00',backgroundColor: '#ccc',opacity: 0.7,borderRadius:5}}>￥{v2.foodPrice}</div>
+                            </div>
+                            <div className="pa-m">
+                                <h3>{v2.foodName}<span onClick={this.showModal.bind(this,v2.key)} style={{float: 'right'}}><MyTag isActive={v2.isActive} /></span></h3>
+                                <small>{v2.shopname}</small>
+                            </div>
+                        </Card>
+                        <Collapse bordered={false} >
+                            <Panel header="了解详细信息" style={customPanelStyle}>
+                                <p>{v2.foodDescription}</p>
+                            </Panel>
+                        </Collapse>
+                    </div>
+                </Col>
+            ));
+            console.log('imgsTag');
+            console.log(imgsTag);
+        }
+        console.log('dataSource');
+        console.log(dataSource);
+        
         return (
             <div className="gutter-example button-demo">
                 <BreadcrumbCustom first="分类" second="全部" />
                 <Row gutter={10}>
-                    <Col className="gutter-row" md={4}>
-                        {imgsTag[0]}
-                    </Col>
-                    <Col className="gutter-row" md={4}>
-                        {imgsTag[1]}
-                    </Col>
-                    <Col className="gutter-row" md={4}>
-                        {imgsTag[2]}
-                    </Col>
-                    <Col className="gutter-row" md={4}>
-                        {imgsTag[3]}
-                    </Col>
-                    <Col className="gutter-row" md={4}>
-                        {imgsTag[4]}
-                    </Col>
-                    <Col className="gutter-row" md={4}>
-                        {imgsTag[0]}
-                    </Col>
+                    {imgsTag}
                 </Row>
                 <div className="pswp" tabIndex="-1" role="dialog" aria-hidden="true" ref={(div) => {this.pswpElement = div;} }>
 
@@ -193,6 +229,15 @@ class All extends React.Component {
                     </div>
 
                 </div>
+                <Modal visible={this.state.visible} title="确认订单" onOk={this.handleOk.bind(this)} onCancel={this.handleCancel.bind(this)}
+                  footer={[
+                    <Button key="back" size="large" onClick={this.handleCancel.bind(this)}>取消订单</Button>,
+                    <Button key="submit" type="primary" size="large" onClick={this.handleOk.bind(this)}>
+                      确认订单
+                    </Button>,
+                  ]}>
+                  <p>是否确认此订单？</p>
+                </Modal>
                 <style>{`
                     .ant-card-body img {
                         cursor: pointer;
