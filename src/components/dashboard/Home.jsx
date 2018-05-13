@@ -97,7 +97,6 @@ export default class Home extends React.Component {
                                     <AutoPlay />
                                     <Content1 id="content_2_0" key="content_2_0" isMode={this.state.isMode}/>
                                     <Content2 id="content_3_0" key="content_3_0" isMode={this.state.isMode}/>
-                                    <Content3 id="content_4_0" key="content_4_0" isMode={this.state.isMode}/>
                                 </Card>
                             }
                         </div>

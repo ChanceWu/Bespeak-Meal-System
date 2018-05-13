@@ -11,5 +11,5 @@ export const MOCK_AUTH_VISITOR = MOCK_AUTH + '/visitor';                       /
 
 
 export default{
-	baseUrl: "http://10.240.212.116:27105",
+	baseUrl: "http://10.240.253.253:27105",
 }

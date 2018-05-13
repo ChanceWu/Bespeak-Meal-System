@@ -47,7 +47,7 @@ class OrderManagememt extends React.Component {
       action: "updateOrder",
     })).then(()=>{
       if(this.props.orderManagement.data==='SUCCESS!'){
-        message.success('激活状态修改成功！');
+        message.success('状态修改成功！');
         this.getUserList();
       }
     })
